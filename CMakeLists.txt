@@ -5,20 +5,25 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Source files
-set(SOURCES
-    src/main.cpp
-    src/pcap_reader.cpp
+set(CORE_SOURCES
+    src/connection_tracker.cpp
+    src/dpi_engine.cpp
+    src/dpi_mt.cpp
+    src/dpi_processor.cpp
+    src/fast_path.cpp
+    src/load_balancer.cpp
     src/packet_parser.cpp
+    src/pcap_reader.cpp
+    src/rule_manager.cpp
+    src/sni_extractor.cpp
+    src/types.cpp
 )
 
-# Header files location
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
-# Create the executable
-add_executable(packet_analyzer ${SOURCES})
+add_executable(dpi_api    src/main_json.cpp    ${CORE_SOURCES})
+add_executable(dpi_simple src/main_simple.cpp  ${CORE_SOURCES})
+add_executable(dpi_engine src/main_dpi.cpp     ${CORE_SOURCES})
 
-# For macOS, we might need to link against system libraries later
 if(APPLE)
-    # Add any macOS-specific settings here
 endif()

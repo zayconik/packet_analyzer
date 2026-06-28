@@ -1,0 +1,11 @@
+node_modules/
+server/node_modules/
+client/node_modules/
+client/dist/
+.git/
+*.exe
+build/
+server/uploads/
+server/outputs/
+.vscode/
+.idea/

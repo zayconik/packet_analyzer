@@ -4,8 +4,7 @@ import DropZone from "./components/DropZone.jsx";
 import BlockingRules from "./components/BlockingRules.jsx";
 import Results from "./components/Results.jsx";
 import Loading from "./components/Loading.jsx";
-
-const API_BASE = "/api";
+import { API_BASE } from "./config.js";
 
 export default function App() {
   const [engineReady, setEngineReady] = useState(null);

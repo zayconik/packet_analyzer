@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { API_BASE } from "../config.js";
 
 const SUPPORTED_APPS = [
   "Amazon", "Apple", "Cloudflare", "Discord", "DNS", "Facebook", "GitHub",
@@ -10,7 +11,7 @@ export default function BlockingRules({ rules, onRulesChange }) {
   const [apps, setApps] = useState(SUPPORTED_APPS);
 
   useEffect(() => {
-    fetch("/api/apps")
+    fetch(`${API_BASE}/apps`)
       .then((r) => r.json())
       .then((d) => { if (d.apps?.length) setApps(d.apps); })
       .catch(() => {});

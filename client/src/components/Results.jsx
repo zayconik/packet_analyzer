@@ -5,6 +5,8 @@ function esc(str) {
   return div.innerHTML;
 }
 
+import { API_BASE } from "../config.js";
+
 export default function Results({ data }) {
   const apps = data.app_breakdown || [];
   const domains = data.domains || [];
@@ -18,7 +20,7 @@ export default function Results({ data }) {
         <div className="results-actions">
           <span className="filename">{data.input_filename || ""}</span>
           {data.job_id && (
-            <a className="btn btn-secondary" href={`/api/download/${data.job_id}`} download>
+            <a className="btn btn-secondary" href={`${API_BASE}/download/${data.job_id}`} download>
               Download filtered PCAP
             </a>
           )}
