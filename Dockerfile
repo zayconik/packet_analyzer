@@ -29,11 +29,9 @@ COPY server/ ./server/
 # Create runtime directories
 RUN mkdir -p server/uploads server/outputs
 
-FROM node:20-alpine
+FROM node:20-bookworm-slim
 
 WORKDIR /app
-
-RUN apk add --no-cache libstdc++
 
 COPY --from=builder /app/dpi_api ./
 COPY --from=builder /app/server ./server

@@ -21,9 +21,15 @@ set(CORE_SOURCES
 
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
+find_package(Threads REQUIRED)
+
 add_executable(dpi_api    src/main_json.cpp    ${CORE_SOURCES})
 add_executable(dpi_simple src/main_simple.cpp  ${CORE_SOURCES})
 add_executable(dpi_engine src/main_dpi.cpp     ${CORE_SOURCES})
+
+target_link_libraries(dpi_api    PRIVATE Threads::Threads)
+target_link_libraries(dpi_simple PRIVATE Threads::Threads)
+target_link_libraries(dpi_engine PRIVATE Threads::Threads)
 
 if(APPLE)
 endif()
