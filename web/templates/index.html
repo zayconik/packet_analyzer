@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DPI Packet Analyzer</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="header-inner">
+        <div class="brand">
+          <div class="logo">DPI</div>
+          <div>
+            <h1>Packet Analyzer</h1>
+            <p class="subtitle">Deep Packet Inspection — upload a PCAP, classify traffic, apply blocking rules</p>
+          </div>
+        </div>
+        <div id="engine-status" class="status-badge status-unknown">Checking engine…</div>
+      </div>
+    </header>
+
+    <main class="main">
+      <section class="panel upload-panel">
+        <h2>Analyze Capture</h2>
+
+        <div id="drop-zone" class="drop-zone">
+          <input type="file" id="pcap-input" accept=".pcap,.pcapng" hidden>
+          <div class="drop-icon">📦</div>
+          <p class="drop-title">Drop a <strong>.pcap</strong> file here</p>
+          <p class="drop-hint">or <button type="button" class="link-btn" id="browse-btn">browse files</button></p>
+          <p id="selected-file" class="selected-file"></p>
+        </div>
+
+        <div class="rules-section">
+          <div class="rules-heading">
+            <h3>Blocking rules</h3>
+            <p class="rules-note">Choose what to block, then click <strong>Analyze PCAP</strong> or <strong>Try sample</strong> below. Rules are applied during analysis — there is no separate submit step.</p>
+          </div>
+
+          <div class="rules-grid">
+            <div class="field field-apps">
+              <label>Block applications</label>
+              <div id="block-apps" class="app-checkboxes">
+                {% for app in apps %}
+                <label class="app-check">
+                  <input type="checkbox" name="block-app" value="{{ app }}">
+                  <span>{{ app }}</span>
+                </label>
+                {% endfor %}
+              </div>
+              <span class="hint">Select apps to block — detected via SNI/TLS fingerprint</span>
+            </div>
+            <div class="field">
+              <label for="block-ips">Block source IPs</label>
+              <input type="text" id="block-ips" placeholder="192.168.1.50, 10.0.0.5" spellcheck="false">
+            </div>
+            <div class="field">
+              <label for="block-domains">Block domains</label>
+              <input type="text" id="block-domains" placeholder="facebook, tiktok" spellcheck="false">
+              <span class="hint">Substring match on SNI / Host header</span>
+            </div>
+          </div>
+
+          <p id="rules-summary" class="rules-summary hidden"></p>
+        </div>
+
+        <div class="actions">
+          <button type="button" id="analyze-btn" class="btn btn-primary" disabled>Analyze PCAP (apply rules)</button>
+          <button type="button" id="sample-btn" class="btn btn-secondary">Try sample with rules</button>
+        </div>
+      </section>
+
+      <section id="results-section" class="panel results-panel hidden">
+        <div class="results-header">
+          <h2>Results</h2>
+          <div class="results-actions">
+            <span id="results-filename" class="filename"></span>
+            <a id="download-btn" class="btn btn-secondary" href="#" download>Download filtered PCAP</a>
+          </div>
+        </div>
+
+        <div id="error-banner" class="error-banner hidden"></div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span class="stat-label">Total packets</span>
+            <span id="stat-total" class="stat-value">—</span>
+          </div>
+          <div class="stat-card stat-forward">
+            <span class="stat-label">Forwarded</span>
+            <span id="stat-forwarded" class="stat-value">—</span>
+          </div>
+          <div class="stat-card stat-drop">
+            <span class="stat-label">Dropped</span>
+            <span id="stat-dropped" class="stat-value">—</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Active flows</span>
+            <span id="stat-flows" class="stat-value">—</span>
+          </div>
+        </div>
+
+        <div class="results-columns">
+          <div class="results-col">
+            <h3>Application breakdown</h3>
+            <div id="app-chart" class="app-chart"></div>
+          </div>
+          <div class="results-col">
+            <h3>Detected domains</h3>
+            <div id="domain-list" class="domain-list"></div>
+          </div>
+        </div>
+
+        <div class="flows-section">
+          <h3>Connection flows</h3>
+          <div class="table-wrap">
+            <table class="flows-table">
+              <thead>
+                <tr>
+                  <th>Source</th>
+                  <th>Destination</th>
+                  <th>App</th>
+                  <th>Domain</th>
+                  <th>Pkts</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="flows-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <div id="loading" class="loading hidden">
+        <div class="spinner"></div>
+        <p>Processing packets…</p>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <p>C++ DPI engine · TLS SNI &amp; HTTP Host classification · Blocking by IP, app, or domain</p>
+    </footer>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

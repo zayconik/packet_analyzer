@@ -2,6 +2,11 @@
 *.exe
 dpi_engine
 dpi_simple
+dpi_api
+
+# Web UI runtime files
+web/uploads/
+web/outputs/
 
 # Build artifacts / intermediate files
 FP

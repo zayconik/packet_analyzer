@@ -160,6 +160,37 @@ You should see the processing report printed to the terminal, and `output.pcap` 
 
 ---
 
+## Web UI (Browser Interface)
+
+Instead of using the console, you can run a local web dashboard to upload PCAP files, configure blocking rules, and view results visually.
+
+### Setup
+
+```powershell
+# 1. Build the web API binary
+python web/build_api.py
+
+# 2. Install Python dependencies
+pip install -r web/requirements.txt
+
+# 3. Start the server
+python web/server.py
+```
+
+Then open **http://127.0.0.1:5000** in your browser.
+
+### Features
+
+- Drag-and-drop PCAP upload
+- Block by application, IP, or domain
+- Live stats: forwarded vs dropped packets, app breakdown, detected domains
+- Download the filtered output PCAP
+- **Try sample** button to analyze the bundled `test_dpi.pcap` instantly
+
+The console CLI (`dpi_engine.exe`) still works as before — the web UI is an optional layer on top.
+
+---
+
 ## Generating a Test PCAP
 
 If you want to regenerate the `test_dpi.pcap` file (or create your own), a Python script is included. You need Python 3 (no extra libraries required):

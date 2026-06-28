@@ -43,6 +43,9 @@ public:
 
     // Open a pcap file for reading
     bool open(const std::string& filename);
+
+    // Suppress informational stdout (for JSON/API mode)
+    void setQuiet(bool quiet) { quiet_ = quiet; }
     
     // Close the file
     void close();
@@ -63,6 +66,7 @@ private:
     std::ifstream file_;
     PcapGlobalHeader global_header_;
     bool needs_byte_swap_ = false;
+    bool quiet_ = false;
     
     // Helper to swap bytes if needed
     uint16_t maybeSwap16(uint16_t value);
