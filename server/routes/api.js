@@ -89,7 +89,7 @@ router.post("/analyze", upload.single("pcap"), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ success: false, error: "No PCAP file uploaded" });
 
-    const jobId = uuidv4().slice(0, 12);
+    const jobId = uuidv4().replace(/-/g, "").slice(0, 12);
     const inputPath = path.join(UPLOAD_DIR, `${jobId}_input.pcap`);
     const outputPath = path.join(OUTPUT_DIR, `${jobId}_output.pcap`);
 
@@ -115,7 +115,7 @@ router.post("/sample", async (req, res) => {
     const sample = findSample();
     if (!sample) return res.status(404).json({ success: false, error: "test_dpi.pcap not found" });
 
-    const jobId = uuidv4().slice(0, 12);
+    const jobId = uuidv4().replace(/-/g, "").slice(0, 12);
     const inputPath = path.join(UPLOAD_DIR, `${jobId}_input.pcap`);
     const outputPath = path.join(OUTPUT_DIR, `${jobId}_output.pcap`);
 

@@ -7,8 +7,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential cmake && \
     rm -rf /var/lib/apt/lists/*
 
-# Copy root package.json (for reference)
+# Copy root files
 COPY package.json ./
+COPY test_dpi.pcap ./
 
 # Copy C++ source
 COPY CMakeLists.txt ./
@@ -36,6 +37,7 @@ WORKDIR /app
 COPY --from=builder /app/dpi_api ./
 COPY --from=builder /app/server ./server
 COPY --from=builder /app/package.json ./
+COPY --from=builder /app/test_dpi.pcap ./
 
 ENV NODE_ENV=production
 EXPOSE 5000

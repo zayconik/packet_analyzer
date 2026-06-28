@@ -219,47 +219,43 @@ No extra libraries required (uses only the Python standard library).
 
 ## Deploying to Production
 
-This project has two parts that need separate hosting:
+The project is deployed as two separate services:
 
-### 1. React Frontend → Netlify
+### 1. Backend — Render (Web Service)
 
-```bash
-# Build the React app
-cd client && npm run build    # outputs to client/dist/
-```
+The Express API server + C++ DPI engine runs on **Render** using Docker.
 
-1. Push the repo to GitHub
-2. Connect the repo to [Netlify](https://app.netlify.com)
-3. Set:
-   - **Build command:** `cd client && npm run build`
+**Setup:**
+1. Push the repo to GitHub (or GitLab/Bitbucket).
+2. On [Render Dashboard](https://dashboard.render.com), create a **New Web Service**.
+3. Connect your repository.
+4. Render auto-detects the `Dockerfile`. Use these settings:
+   - **Name:** `packet-analyzer-api`
+   - **Runtime:** Docker
+   - **Branch:** `main` (or your deployment branch)
+   - **Health Check Path:** `/api/status`
+   - **Auto-Deploy:** Yes
+5. No environment variables are required (defaults to `NODE_ENV=production`, port `5000`).
+6. Deploy. Once live, note the URL (e.g. `https://packet-analyzer-api.onrender.com`).
+
+The `Dockerfile` handles everything: it installs CMake, builds the C++ `dpi_api` binary, installs Node dependencies, and starts the Express server.
+
+### 2. Frontend — Netlify
+
+The React + Vite client is deployed on **Netlify**.
+
+**Setup:**
+1. On [Netlify](https://app.netlify.com), add a **New site** → **Import an existing project**.
+2. Connect your repository.
+3. Use these settings (matches `netlify.toml`):
+   - **Build command:** `cd client && npm ci && npm run build`
    - **Publish directory:** `client/dist`
-   - **Environment variable:** `VITE_API_URL=https://your-api-server.com`
+4. Add environment variable:
+   - **Key:** `VITE_API_URL`
+   - **Value:** Your Render backend URL (e.g. `https://packet-analyzer-api.onrender.com/api`)
+5. Deploy. Netlify will build the client and serve it, with SPA redirects handled by the `netlify.toml`.
 
-4. Update `vite.config.js` to remove the dev proxy and use `VITE_API_URL` instead
-
-### 2. Express API + C++ Binary → Render / Railway
-
-These platforms support Node.js with native binaries:
-
-- [Render](https://render.com) — Web Service
-- [Railway](https://railway.app)
-- [DigitalOcean App Platform](https://www.digitalocean.com/products/app-platform)
-
-**Steps:**
-
-1. Compile `dpi_api` for Linux:
-   ```bash
-   g++ -std=c++17 -O2 -I include \
-       -o dpi_api \
-       src/main_json.cpp src/dpi_processor.cpp src/pcap_reader.cpp \
-       src/packet_parser.cpp src/sni_extractor.cpp src/types.cpp
-   ```
-
-2. Deploy the `server/` folder along with the Linux `dpi_api` binary and `test_dpi.pcap`
-
-3. Set environment variables:
-   - `NODE_ENV=production`
-   - `PORT=10000` (or whatever the platform provides)
+> **Note:** The `VITE_API_URL` variable must be set at build time so the client knows where to send API requests. In development it defaults to `/api` (proxied by Vite to `localhost:5000`).
 
 ---
 
