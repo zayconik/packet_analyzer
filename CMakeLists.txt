@@ -8,7 +8,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CORE_SOURCES
     src/connection_tracker.cpp
     src/dpi_engine.cpp
-    src/dpi_mt.cpp
     src/dpi_processor.cpp
     src/fast_path.cpp
     src/load_balancer.cpp
