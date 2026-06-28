@@ -1,17 +1,27 @@
+# Dependencies
+node_modules/
+server/node_modules/
+client/node_modules/
+
+# React build output
+client/dist/
+
+# Environment files
+.env
+.env.local
+.env.production
+
 # Compiled executables
 *.exe
 dpi_engine
 dpi_simple
 dpi_api
 
-# Web UI runtime files
-web/uploads/
-web/outputs/
+# Runtime files
+server/uploads/
+server/outputs/
 
 # Build artifacts / intermediate files
-FP
-LB
-Output
 *.o
 *.obj
 *.a
